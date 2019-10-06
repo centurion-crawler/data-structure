@@ -4,9 +4,13 @@
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{color}
-\lstset{ %
-	extendedchars=false,            % Shutdown no-ASCII compatible
-	language=Matlab,                % choose the language of the code
+\usepackage{xcolor}
+\usepackage{geometry}
+\geometry{left=1.5cm,right=1.5cm,top=1.5cm,bottom=1.5cm}
+\lstset{breaklines}%这条命令可以让LaTeX自动将长的代码行换行排版
+\lstset{extendedchars=false}%这一条命令可以解决代码跨页时，章节标题，页眉等汉字不显示的问题
+\lstset{ 
+	language=C++,                % choose the language of the code
 	basicstyle=\small\sf,    % the size of the fonts that are used for the code
 	tabsize=3,                            % sets default tabsize to 3 spaces
 	numbers=left,                   % where to put the line-numbers
@@ -17,7 +21,8 @@
 	keywordstyle=\color[RGB]{33,33,234},               % keywords
 	commentstyle=\color[RGB]{0,0,0},    % comments
 	stringstyle=\color[rgb]{0.170,0.187,0.102},      % strings
-	backgroundcolor=\color{white}, % choose the background color. You must add \usepackage{color}
+    backgroundcolor=\color{white},
+    rulesepcolor=\color[RGB]{20,20,20},  % choose the background color. You must add \usepackage{color}
 	showspaces=false,               % show spaces adding particular underscores
 	showstringspaces=false,         % underline spaces within strings
 	showtabs=false,                 % show tabs within strings adding particular underscores                frame = single,         % adds a frame around the code
@@ -28,6 +33,11 @@
 	% also try caption instead of title
 	mathescape=true,escapechar=?    % escape to latex with ?..?
 	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	%columns=fixed,                  % nice spacing
+	%morestring=[m]',                % strings
+	%morekeywords={%,...},%          % if you want to add more keywords to the set
+	%    break,case,catch,continue,elseif,else,end,for,function,global,%
+	%    if,otherwise,persistent,return,switch,try,while,...},%
 }
 \pagestyle{fancy}
 \lhead{数据结构作业}
@@ -244,10 +254,10 @@ int main()
 \textbf{3-15}\\
 题目要求：双向栈，实现初始化，push和pop操作。\\
 算法分析：模拟单向栈，当push是0栈和1栈重合，或者栈为空时，返回ERROR。\\
-时间复杂度\textit{O(n)}，空间复杂度\textit{O{n}}.
+时间复杂度\textit{O(n)}，空间复杂度\textit{O(n)}.\\
 3-15.cpp
 \begin{lstlisting}
-    #include<bits/stdc++.h>
+#include<bits/stdc++.h>
 #define MAXN 100
 using namespace std;
 int stacklength;
