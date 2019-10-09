@@ -1,11 +1,14 @@
 \documentclass[UTF8,a4paper]{article}
 \usepackage{fancyhdr}
 \usepackage{ctex}
+\usepackage{CJK}
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{geometry}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
 \geometry{left=1.5cm,right=1.5cm,top=1.5cm,bottom=1.5cm}
 \lstset{breaklines}%这条命令可以让LaTeX自动将长的代码行换行排版
 \lstset{extendedchars=false}%这一条命令可以解决代码跨页时，章节标题，页眉等汉字不显示的问题
@@ -522,9 +525,10 @@ $$
 \section{算法分析}
     栈操作（深搜）+贪心算法。\\
 
-    每到达一个点试探八个方向是否能走，对于能进行的方向判断该方向能够继续走的方向，
+    由于求的是可行解，每到达一个点试探八个方向是否能走，对于能进行的方向判断该方向能够继续走的方向，并建立MAP对走过的点进行标记，回溯时恢复即可。
     取其中子方案数最小的方向进行，这样最容易到达搜索树的根节点。\\
-    直到能够走完棋盘为止。
+    \par{直到能够走完棋盘为止。}\\
+    \par{时间复杂度\textit{O($n^2$)},空间复杂度\textit{O($n^2$)},若用传统方法求得所有解的时间复杂度为\textit{O($8^n$)},无法多项式复杂度内完成。}
 \section{程序及运行结果}
 \subsection{程序代码}
 horse.cpp
@@ -535,9 +539,9 @@ horse.cpp
 using namespace std;
 
 int dx[9]={0,2,2,-2,-2,1,1,-1,-1};
-int dy[9]={0,-1,1,1,-1,-2,2,-2,2};
-bool MAP[N+1][N+1];
-int sign[N+1][N+1]={0};
+int dy[9]={0,-1,1,1,-1,-2,2,-2,2};//方向函数
+bool MAP[N+1][N+1];//标记数组
+int sign[N+1][N+1]={0};//输出数组
 void print()
 {
     for (int i=1;i<=N;i++)
@@ -552,7 +556,7 @@ bool judge(int i,int j)
     if (!MAP[i][j]&&i>0&&i<N+1&&j>0&&j<N+1)
     return true;
     else return false;
-}
+}//判断当前点是否可走
 int judgepath(int x_,int y_)
 {
 	int c;
@@ -565,10 +569,10 @@ int judgepath(int x_,int y_)
 		}
 	}
 	return tag;
-}
-void walk(int x,int y,int cnt)
+}//得到当前点有多少个可走的后继点
+void walk(int x,int y,int cnt)//马踏棋盘
 {
-    cout<<x<<" "<<y<<endl;
+    cout<<x<<" "<<y<<endl;//输出当前的位置
     if (cnt==N*N)
         {
             print();
@@ -587,7 +591,7 @@ void walk(int x,int y,int cnt)
                 rec=i;
             }
     }
-    if (MIN!=INF)
+    if (MIN!=INF)//得到最少路径的后继点继续
     {
                 sign[x+dx[rec]][y+dy[rec]]=cnt+1;
                 MAP[x+dx[rec]][y+dy[rec]]=true;
@@ -595,9 +599,10 @@ void walk(int x,int y,int cnt)
                 MAP[x+dx[rec]][y+dy[rec]]=false;
                 sign[x+dx[rec]][y+dy[rec]]=0;
     } 
-        return;
+    //如果无路可走就回溯
+    return;
 }
-void init()
+void init()//输入函数初始化
 {
     int x0,y0;
     memset(MAP,sizeof(MAP),false);
