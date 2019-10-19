@@ -1,0 +1,224 @@
+\documentclass[UTF8,a4paper]{article}
+\usepackage{fancyhdr}
+\usepackage{ctex}
+\usepackage{CJK}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\geometry{left=1.5cm,right=1.5cm,top=1.5cm,bottom=1.5cm}
+\lstset{breaklines}%这条命令可以让LaTeX自动将长的代码行换行排版
+\lstset{extendedchars=false}%这一条命令可以解决代码跨页时，章节标题，页眉等汉字不显示的问题
+\lstset{ 
+	language=C++,                % choose the language of the code
+	basicstyle=\small\sf,    % the size of the fonts that are used for the code
+	tabsize=3,                            % sets default tabsize to 3 spaces
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\tiny,              % the size of the fonts that are used for the line-numbers
+	stepnumber=1,                   % the step between two line-numbers. If it's 1 each line
+	% will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code   %
+	keywordstyle=\color[RGB]{33,33,234},               % keywords
+	commentstyle=\color[RGB]{0,0,0},    % comments
+	stringstyle=\color[rgb]{0.170,0.187,0.102},      % strings
+    backgroundcolor=\color{white},
+    rulesepcolor=\color[RGB]{20,20,20},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores                frame = single,         % adds a frame around the code
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	title=\lstname,                 % show the filename of files included with \lstinputlisting;
+	% also try caption instead of title
+	mathescape=true,escapechar=?    % escape to latex with ?..?
+	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	%columns=fixed,                  % nice spacing
+	%morestring=[m]',                % strings
+	%morekeywords={%,...},%          % if you want to add more keywords to the set
+	%    break,case,catch,continue,elseif,else,end,for,function,global,%
+	%    if,otherwise,persistent,return,switch,try,while,...},%
+}
+\pagestyle{fancy}
+\lhead{数据结构作业}
+\chead{}
+\rhead{\bfseries 22920182204393庄震丰}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\begin{document}
+\begin{center}
+    \textbf{\LARGE{数据结构作业 第二章、第三章}}\\[0.5cm]
+    \normalsize{庄震丰 22920182204393}\\[0.3cm]
+    \large{Oct. $19^{th}$, 2019}
+\end{center}
+\textbf{5-18}\\
+    题目要求：将顺序表的元素右移k位，只使用一个附加存储，交换\\
+    算法分析：考虑一个顺序表，每个元素和前面一个元素交换直到再次访问到开始节点，这样的效果和每个元素右移一位一样。\\
+    因此我们考虑每次元素和k位之前的元素交换，这里只需一个临时储存变量。而对于一个n长度，k移动要求的顺序表，将会形成gcd(n,k)个移动闭环，每个环长$\frac{n}{k}$。因此每个元素只交换了一次。
+    时间复杂度\textit{O}(n),附加空间\textit{O}(1)。
+    5-18.cpp
+\begin{lstlisting}
+#include<bits/stdc++.h>
+using namespace std;
+int n,k;
+int A[10000];
+int tmp;
+void change(int x,int y)
+{
+    int l=min(y-x,n-y);
+    for (int i=0;i<l;i++)
+        {   
+            tmp=A[x+i];
+            A[x+i]=A[y+i];
+            A[y+i]=tmp;
+        }
+}
+int gcd (int x,int y)
+{
+    int z=x%y;
+    while(z!=0)
+    {
+        x=y;
+        y=z;
+        z=x%y;
+    }
+    return y;
+}
+int main()
+{
+    cin>>n>>k;
+    for (int i=0;i<n;i++)
+        cin>>A[i];
+    for (int i=0;i<gcd(n,k);i++)
+        {
+            for (int j=i;j!=(i+k)%n;j=(j-k+n)%n)
+            {
+                tmp=A[j];
+                A[j]=A[(j-k+n)%n];
+                A[(j-k+n)%n]=tmp;
+            }
+        }
+    for (int i=0;i<n;i++)
+        cout<<A[i]<<" ";
+    return 0;
+}
+\end{lstlisting}
+\textbf{5-19}\\
+    题目要求：求矩阵的马鞍点\\
+     算法分析：根据马鞍点的定义, 马鞍点一定等于其所在行的最小值,为其所在行的最大值点，因此用两个辅助数组max,min记录当前行的最小值位置和列的最大值位置。\\
+    首先建立矩阵，得到每行最小值点位置，存入$max[i][cnt]$中。\\
+    第二次扫描矩阵，得到每列最大值点位置，存入$max[j][cnt]$中。\\
+    第三次扫描$min[i][cnti]$，判断每行$max[min[i][cnti]][cntj]$是否有等于i的点，有就输出没有就i++\\
+    若每行每列最多一个马鞍点，时间复杂度复杂度\textit{O($n^2$)}.\\
+    每行每列多个马鞍点，时间复杂度\textit{O($n^3$)}\\
+    空间复杂度\textit{O($n^2$)}
+    5-19.cpp
+\begin{lstlisting}
+#include <bits/stdc++.h>
+#define MAX 256 
+typedef struct
+{
+	int x;
+	int y;
+	int value;
+}Node;
+typedef Node SNode;
+bool Algo_5_19(int a[MAX][MAX], int row, int col, SNode p[MAX]);
+void Min_row(int a[MAX][MAX], int col, int i, Node min[MAX]);
+bool IsMax_col(int a[MAX][MAX], int row, Node v);
+int main(int argc, char *argv[])
+{
+	SNode p[MAX];	
+	int row,col
+	int a[MAX][MAX] ；
+	int i, j, k;
+	cin>>row,col;
+	for(i=0; i<row; i++)
+	{
+		for(j=0; j<col; j++)
+			scanf("%3d ",&a[i][j]);
+	}
+	
+	
+	if(Algo_5_19(a, row, col, p))
+	{
+		printf("此矩阵中存在马鞍点...\n");
+		for(k=1; k<=p[0].value; k++)
+			printf("第 %d 行第 %d 列的马鞍点 %d\n", p[k].x, p[k].y, p[k].value);
+	}
+	else
+		printf("此矩阵中不存在马鞍点...\n");
+	
+	printf("\n");
+	
+	return 0;
+}
+bool Algo_5_19(int a[MAX][MAX], int row, int col, SNode p[MAX])
+{
+	int i, k;
+	Node min[MAX];
+	
+	p[0].value = 0;
+	
+	for(i=0; i<row; i++)
+	{
+		Min_row(a, col, i, min);
+		for(k=1; k<=min[0].value; k++)
+		{
+			if(IsMax_col(a, row, min[k]))
+			{
+				p[0].value++;
+				p[p[0].value] = min[k];
+			}
+		}
+	}
+	
+	if(p[0].value)
+		return true;
+	else
+		return false;	
+}
+void Min_row(int a[MAX][MAX], int col, int i, Node min[MAX])
+{
+	int j;
+	
+	min[0].value = 0;
+	
+	for(j=0; j<col; j++)
+	{
+		if(!j || a[i][j]==min[j-1].value)
+			min[0].value++;
+		else
+		{
+			if(a[i][j]<min[j-1].value)
+				min[0].value = 1;
+			else
+				continue;
+		}
+			
+		min[min[0].value].x = i;
+		min[min[0].value].y = j;
+		min[min[0].value].value = a[i][j];			
+	}
+}
+
+bool IsMax_col(int a[MAX][MAX], int row, Node v)
+{
+	int i;
+	
+	for(i=0; i<row; i++)
+	{
+		if(a[i][v.y]>v.value)
+			return false;
+	}
+	
+	return true;
+}
+
+\end{lstlisting}
+\end{document}
