@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2019.6.10)  19 OCT 2019 23:51
+This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2019.6.10)  20 OCT 2019 22:54
 entering extended mode
 **e:/learning/program/github/data-structure/data-structure-homework/chapter*5/chapter5
 ("e:/learning/program/github/data-structure/data-structure-homework/chapter 5/chapter5.tex"
@@ -836,10 +836,10 @@ Requested font "SimHei/ICU:script=latn;language=DFLT;mapping=tex-text;" at 9.0pt
  -> C:/Windows/Fonts/simhei.ttf
  [2] [3] [4] ("e:\learning\program\github\data-structure\data-structure-homework\chapter 5\chapter5.aux") ) 
 Here is how much of TeX's memory you used:
- 17616 strings out of 430478
- 349227 string characters out of 3191377
+ 17611 strings out of 430478
+ 349119 string characters out of 3191377
  474085 words of memory out of 3000000
- 20538 multiletter control sequences out of 15000+200000
+ 20533 multiletter control sequences out of 15000+200000
  8841 words of font info for 57 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
  57i,12n,97p,908b,1239s stack positions out of 5000i,500n,10000p,200000b,50000s
