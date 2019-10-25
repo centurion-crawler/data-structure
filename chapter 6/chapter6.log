@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2019.6.10)  25 OCT 2019 17:15
+This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2019.6.10)  25 OCT 2019 17:31
 entering extended mode
 **e:/learning/program/github/data-structure/data-structure-homework/chapter*6/chapter6
 ("e:/learning/program/github/data-structure/data-structure-homework/chapter 6/chapter6.tex"
@@ -818,7 +818,12 @@ Requested font "SimHei/ICU:script=latn;language=DFLT;mapping=tex-text;" at 9.0pt
 Requested font "SimHei/ICU:script=latn;language=DFLT;mapping=tex-text;" at 10.0pt
  -> C:/Windows/Fonts/simhei.ttf
 File: 6-33.png Graphic file (type QTm)
-<use  "6-33.png" > [1
+<use  "6-33.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 92--116
+
+ []
+
+[1
 
 ] [2]
 Requested font "cmmi9" at 9.0pt
@@ -840,15 +845,20 @@ Overfull \hbox (2.22pt too wide) in paragraph at lines 203--221
 [] []
  []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 203--221
+
+ []
+
 [4] [5] [6] ("e:\learning\program\github\data-structure\data-structure-homework\chapter 6\chapter6.aux") ) 
 Here is how much of TeX's memory you used:
  17664 strings out of 430478
  349478 string characters out of 3191377
- 480085 words of memory out of 3000000
+ 481085 words of memory out of 3000000
  20583 multiletter control sequences out of 15000+200000
  8606 words of font info for 55 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
- 57i,12n,97p,908b,996s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 57i,12n,97p,908b,1000s stack positions out of 5000i,500n,10000p,200000b,50000s
 
 Error 1 (driver return code) generating output;
 file chapter6.pdf may not be valid.

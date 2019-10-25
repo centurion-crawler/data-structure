@@ -62,7 +62,7 @@
     题目要求：假定用两个一维数组作为有n个结点的二叉树的存储结构，L[i]和R[i]分别指示结点i(i=1,2,...n)的左孩子和右孩子，0表示空，试写出一个算法判断u是否为v的子孙。\\
 	算法分析：对于给定的u和v，从v开始向下递归搜索每个结点看是否为u，并用全局变量进行标记，如果v的子孙没有则会全部遍历，若找到则直接输出判断结果。
 	\\
-	时间复杂度为O(N),空间复杂度O(N).
+	时间复杂度为O(N),空间复杂度O(N).\\
 	6-33.cpp
 \begin{lstlisting}
 	#include<bits/stdc++.h>
@@ -104,11 +104,11 @@
 0 0\\
 2 10\\
 \textbf{样例输出1}\\
-1
+1\\
 \textbf{说明}\\
 \includegraphics[width=0.7\textwidth]{6-33.png}\\
-输入判断2是否为10的祖先，由图可知为真，输出1。\\
-	\textbf{6-62}\\
+输入判断2是否为10的祖先，由图可知为真，输出1。\\\\
+\textbf{6-62}\\
     题目要求：试编写算法，求一棵以孩子-兄弟表示的树，编写其深度的算法。\\
     算法分析：输入一棵双亲表示的树，运用机构提结点将其转换成孩子-兄弟表示法，再将其进行深搜，每从左结点递归则层数加一，最后统计最大值即可。\\
 	时间复杂度O(n),空间复杂度O(n)。\\
@@ -217,7 +217,7 @@ K 7\\
 \textbf{样例说明}\\
 \includegraphics[width=0.5\textwidth]{6-62.png}
 \includegraphics[width=0.5\textwidth]{6-62-1.png}
-样例描述的树和孩子-兄弟表示法如图所示，层数为4。
+样例描述的树和孩子-兄弟表示法如图所示，层数为4。\\
 \newpage
 \noindent\textbf{6-65}\\
 题目描述：已知一棵二叉树的前序和中序序列分别储存在两个一维数组中，试编写算法建立改树的二叉链表。\\
@@ -228,17 +228,17 @@ K 7\\
 	#include<bits/stdc++.h>
 	using namespace std;
 	#define maxn 1000
-	#define inf 0x3f3f3f3f
+	#define inf 0x3f3f3f3f\\设置无穷大
 	struct node
 	{
 		char c;
 		node *lson;
 		node *rson;
-	};
+	};\\二叉链表结构体数组
 	int n;
 	node * hp;
 	char Tree[maxn]={0};
-	void work(string ptree,string mtree,int cnt)
+	void work(string ptree,string mtree,int cnt)\\将二叉树两种遍历转变成数组存储
 	{
 		char root=ptree[0];
 		Tree[cnt]=root;
@@ -254,7 +254,7 @@ K 7\\
 		}
 		
 	}
-	void trans(int x,node * last,int size)
+	void trans(int x,node * last,int size)\\将数组变成二叉链表存储
 	{
 		node *p1;
 		if (x==1) 
@@ -278,7 +278,7 @@ K 7\\
 			else last->rson=p1;
 		}
 	}      
-	void printlast(node * p)
+	void printlast(node * p)\\后序遍历输出
 	{
 		
 		if (p->lson==NULL && p->rson==NULL) return;
@@ -293,6 +293,7 @@ K 7\\
 		string pre,mid;
 		cin>>pre;
 		cin>>mid;
+		\\初始化
 		work(pre,mid,1);
 		trans(1,NULL,0);
 		printlast(hp);
