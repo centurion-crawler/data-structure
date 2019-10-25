@@ -1,0 +1,186 @@
+6-33
+#include<bits/stdc++.h>
+using namespace std;
+#define maxn 1000
+int L[maxn+1]={0},R[maxn+1]={0};//建立L,R数组储存节点左右儿子
+bool flag=false;
+void getfa(int x,int target)//从v开始往下递归搜素儿子节点
+{
+    if (x==target) {flag=true;return;}
+        if (L[x]!=0) getfa(L[x],target);
+        if (R[x]!=0) getfa(R[x],target);
+}
+int main()
+{
+    int n;
+    int v,u;
+    cin>>n;
+    for (int i=1;i<=n;i++)
+        cin>>L[i]>>R[i];//没有标记为0
+    cin>>v>>u;
+    getfa(v,u); 
+    cout<<flag;
+    return 0;
+}
+
+6-62
+#include<bits/stdc++.h>
+using namespace std;
+#define maxn 1000
+#define inf 0x3f3f3f3f
+struct node
+{
+    char name;
+    node * lson;
+    node * bro;
+};//孩子兄弟结构结点定义
+struct parentnode
+{
+    int fa;
+    char c;
+    node * point;
+};//双亲数组结构结点定义
+parentnode A[maxn];
+int n;
+int cnt=1;
+node* trans()//将双亲数组结构转变成孩子兄弟树形结构
+{
+    node * hp,*p1,*p2;
+    hp=(node*)malloc(sizeof(node));
+    hp->name=A[1].c;
+    hp->bro=NULL;
+    A[1].point=hp;//根节点单独判断
+    for (int i=2;i<=n;i++)
+        {
+            if (A[i].fa!=A[i-1].fa) 
+            {
+                p1=(node*)malloc(sizeof(node));
+                p1->bro=NULL;
+                p1->lson=NULL;
+                p1->name=A[i].c;
+                A[i].point=p1;
+                A[A[i].fa].point->lson=p1;
+                //当前结点是新一层
+            }
+            else 
+            {
+                p2=(node *)malloc(sizeof(node));
+                p2->bro=NULL;
+                p2->lson=NULL;
+                p2->name=A[i].c;
+                A[i].point=p2;
+                p1->bro=p2;
+                p1=p2;指针移动到兄弟结点
+                //当前结点层数不变
+            }
+        }
+    return hp;
+}
+void finddeep(node * p,int deep)//按照孩子-兄弟结构的指针进行遍历即可
+{
+    cout<<p->name<<" ";
+    if (p->bro==NULL&&p->lson==NULL) 
+        {
+            cnt=max(cnt,deep);
+            
+            return;
+        }
+    if (p->lson!=NULL) {finddeep(p->lson,deep+1);cout<<p->name<<" ";}
+    if (p->bro!=NULL) {finddeep(p->bro,deep);cout<<p->name<<" ";}
+    return;
+}
+bool cmp(parentnode a, parentnode b)
+{
+    if (a.fa<b.fa) return true;
+    else return false;
+}
+int main()
+{
+    node * Heap;
+    cin>>n;
+    A[0].fa=-inf;
+    for (int i=1;i<=n;i++)
+    { 
+        scanf("%d %c",&A[i].fa,&A[i].c);//输入每个结点的父亲信息和该点的标号
+    }
+    sort(A+1,A+n+1,cmp);
+        Heap=trans();//返回根节点指针
+        finddeep(Heap,1);
+        cout<<endl<<cnt;
+    return 0;
+}
+6-65
+//6-65
+#include<bits/stdc++.h>
+using namespace std;
+#define maxn 1000
+#define inf 0x3f3f3f3f
+struct node
+{
+    char c;
+    node *lson;
+    node *rson;
+};
+int n;
+node * hp;
+char Tree[maxn]={0};
+void work(string ptree,string mtree,int cnt)
+{
+    char root=ptree[0];
+    Tree[cnt]=root;
+    if (ptree.length()!=1&&mtree.length()!=1)
+    {
+        int pos=mtree.find(root);
+        work(ptree.substr(1,pos),mtree.substr(0,pos),cnt*2);
+        work(ptree.substr(ptree.length()-pos,pos),mtree.substr(mtree.length()-pos,pos),cnt*2+1);
+    }
+    else
+    {
+        Tree[cnt]=root;
+    }
+    
+}
+void trans(int x,node * last,int size)
+{
+    node *p1;
+    if (x==1) 
+    {
+        hp=(node *)malloc(sizeof(node));
+        hp->lson=NULL;
+        hp->rson=NULL;
+        hp->c=Tree[x];
+        if (Tree[x*2]) trans(x*2,hp,1);
+        if (Tree[x*2+1]) trans(x*2+1,hp,2);
+    }
+    else
+    {
+        p1=(node *) malloc(sizeof(node));
+        p1->lson=NULL;
+        p1->rson=NULL;
+        p1->c=Tree[x];
+        if (Tree[x*2]) trans(x*2,p1,1);
+        if (Tree[x*2+1]) trans(x*2+1,p1,2);
+        if (size==1) last->lson=p1;
+        else last->rson=p1;
+    }
+}      
+void printlast(node * p)
+{
+    
+    if (p->lson==NULL && p->rson==NULL) return;
+    if (p->lson!=NULL) printpre(p->lson);
+    if (p->rson!=NULL) printpre(p->rson);
+    cout<<p->c<<" ";
+    return;
+}     
+int main()
+{
+    cin>>n;
+    string pre,mid;
+    cin>>pre;
+    cin>>mid;
+    work(pre,mid,1);
+    trans(1,NULL,0);
+    printlast(hp);
+return 0;
+}

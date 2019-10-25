@@ -1,0 +1,308 @@
+\documentclass[UTF8,a4paper]{article}
+\usepackage{fancyhdr}
+\usepackage{ctex}
+\usepackage{CJK}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\geometry{left=1.5cm,right=1.5cm,top=2cm,bottom=1.5cm}
+\lstset{breaklines}%这条命令可以让LaTeX自动将长的代码行换行排版
+\lstset{extendedchars=false}%这一条命令可以解决代码跨页时，章节标题，页眉等汉字不显示的问题
+\lstset{ 
+	language=C++,                % choose the language of the code
+	basicstyle=\small\sf,    % the size of the fonts that are used for the code
+	tabsize=3,                            % sets default tabsize to 3 spaces
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\tiny,              % the size of the fonts that are used for the line-numbers
+	stepnumber=1,                   % the step between two line-numbers. If it's 1 each line
+	% will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code   %
+	keywordstyle=\color[RGB]{33,33,234},               % keywords
+	commentstyle=\color[RGB]{0,0,0},    % comments
+	stringstyle=\color[rgb]{0.170,0.187,0.102},      % strings
+    backgroundcolor=\color{white},
+    rulesepcolor=\color[RGB]{20,20,20},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores                frame = single,         % adds a frame around the code
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	title=\lstname,                 % show the filename of files included with \lstinputlisting;
+	% also try caption instead of title
+	mathescape=true,escapechar=?    % escape to latex with ?..?
+	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	%columns=fixed,                  % nice spacing
+	%morestring=[m]',                % strings
+	%morekeywords={%,...},%          % if you want to add more keywords to the set
+	%    break,case,catch,continue,elseif,else,end,for,function,global,%
+	%    if,otherwise,persistent,return,switch,try,while,...},%
+}
+\pagestyle{fancy}
+\lhead{数据结构作业}
+\chead{}
+\rhead{\bfseries 22920182204393庄震丰}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\begin{document}
+\begin{center}
+    \textbf{\LARGE{数据结构作业 第六章}}\\[0.5cm]
+    \normalsize{庄震丰 22920182204393}\\[0.3cm]
+    \large{Oct. $25^{th}$, 2019}
+\end{center}
+\textbf{6-33}\\
+    题目要求：假定用两个一维数组作为有n个结点的二叉树的存储结构，L[i]和R[i]分别指示结点i(i=1,2,...n)的左孩子和右孩子，0表示空，试写出一个算法判断u是否为v的子孙。\\
+	算法分析：对于给定的u和v，从v开始向下递归搜索每个结点看是否为u，并用全局变量进行标记，如果v的子孙没有则会全部遍历，若找到则直接输出判断结果。
+	\\
+	时间复杂度为O(N),空间复杂度O(N).
+	6-33.cpp
+\begin{lstlisting}
+	#include<bits/stdc++.h>
+	using namespace std;
+	#define maxn 1000
+	int L[maxn+1]={0},R[maxn+1]={0};//建立L,R数组储存节点左右儿子
+	bool flag=false;
+	void getfa(int x,int target)//从v开始往下递归搜素儿子节点
+	{
+		if (x==target) {flag=true;return;}
+			if (L[x]!=0) getfa(L[x],target);
+			if (R[x]!=0) getfa(R[x],target);
+	}
+	int main()
+	{
+		int n;
+		int v,u;
+		cin>>n;
+		for (int i=1;i<=n;i++)
+			cin>>L[i]>>R[i];
+		cin>>v>>u;
+		getfa(v,u); 
+		cout<<flag;
+		return 0;
+	}
+\end{lstlisting}
+\textbf{样例输入1}\\
+12\\
+2 3\\
+6 7\\
+8 9\\
+10 11\\
+12 0\\
+0 0\\
+0 0\\
+0 0\\
+0 0\\
+0 0\\
+0 0\\
+2 10\\
+\textbf{样例输出1}\\
+1
+\textbf{说明}\\
+\includegraphics[width=0.7\textwidth]{6-33.png}\\
+输入判断2是否为10的祖先，由图可知为真，输出1。\\
+	\textbf{6-62}\\
+    题目要求：试编写算法，求一棵以孩子-兄弟表示的树，编写其深度的算法。\\
+    算法分析：输入一棵双亲表示的树，运用机构提结点将其转换成孩子-兄弟表示法，再将其进行深搜，每从左结点递归则层数加一，最后统计最大值即可。\\
+	时间复杂度O(n),空间复杂度O(n)。\\
+	6-62.cpp
+\begin{lstlisting}
+	#include<bits/stdc++.h>
+	using namespace std;
+	#define maxn 1000
+	#define inf 0x3f3f3f3f
+	struct node
+	{
+		char name;
+		node * lson;
+		node * bro;
+	};//孩子兄弟结构结点定义
+	struct parentnode
+	{
+		int fa;
+		char c;
+		node * point;
+	};//双亲数组结构结点定义
+	parentnode A[maxn];
+	int n;
+	int cnt=1;
+	node* trans()//将双亲数组结构转变成孩子兄弟树形结构
+	{
+		node * hp,*p1,*p2;
+		hp=(node*)malloc(sizeof(node));
+		hp->name=A[1].c;
+		hp->bro=NULL;
+		A[1].point=hp;//根节点单独判断
+		for (int i=2;i<=n;i++)
+			{
+				if (A[i].fa!=A[i-1].fa) 
+				{
+					p1=(node*)malloc(sizeof(node));
+					p1->bro=NULL;
+					p1->lson=NULL;
+					p1->name=A[i].c;
+					A[i].point=p1;
+					A[A[i].fa].point->lson=p1;
+					//当前结点是新一层
+				}
+				else 
+				{
+					p2=(node *)malloc(sizeof(node));
+					p2->bro=NULL;
+					p2->lson=NULL;
+					p2->name=A[i].c;
+					A[i].point=p2;
+					p1->bro=p2;
+					p1=p2;指针移动到兄弟结点
+					//当前结点层数不变
+				}
+			}
+		return hp;
+	}
+	void finddeep(node * p,int deep)//按照孩子-兄弟结构的指针进行遍历即可
+	{
+		cout<<p->name<<" ";
+		if (p->bro==NULL&&p->lson==NULL) 
+			{
+				cnt=max(cnt,deep);
+				
+				return;
+			}
+		if (p->lson!=NULL) {finddeep(p->lson,deep+1);cout<<p->name<<" ";}
+		if (p->bro!=NULL) {finddeep(p->bro,deep);cout<<p->name<<" ";}
+		return;
+	}
+	bool cmp(parentnode a, parentnode b)
+	{
+		if (a.fa<b.fa) return true;
+		else return false;
+	}
+	int main()
+	{
+		node * Heap;
+		cin>>n;
+		A[0].fa=-inf;
+		for (int i=1;i<=n;i++)
+		{ 
+			scanf("%d %c",&A[i].fa,&A[i].c);//输入每个结点的父亲信息和该点的标号
+		}
+		sort(A+1,A+n+1,cmp);
+			Heap=trans();//返回根节点指针
+			finddeep(Heap,1);
+			cout<<endl<<cnt;
+		return 0;
+	}
+\end{lstlisting}
+\textbf{样例输入一}\\
+10\\
+R -1\\
+A 1\\
+B 1\\
+C 1\\
+D 2\\
+E 2\\
+F 4\\
+G 7\\
+H 7\\
+K 7\\
+\textbf{样例输出一}\\
+4\\
+\textbf{样例说明}\\
+\includegraphics[width=0.5\textwidth]{6-62.png}
+\includegraphics[width=0.5\textwidth]{6-62-1.png}
+样例描述的树和孩子-兄弟表示法如图所示，层数为4。
+\newpage
+\noindent\textbf{6-65}\\
+题目描述：已知一棵二叉树的前序和中序序列分别储存在两个一维数组中，试编写算法建立改树的二叉链表。\\
+算法分析：先求树的结构，将其储存在一个数组中，在通过这个数组将其转变为链表形式，最后用后序遍历验证输出。\\
+时间复杂度O(n),空间复杂度O(n)。\\
+6-65.cpp
+\begin{lstlisting}
+	#include<bits/stdc++.h>
+	using namespace std;
+	#define maxn 1000
+	#define inf 0x3f3f3f3f
+	struct node
+	{
+		char c;
+		node *lson;
+		node *rson;
+	};
+	int n;
+	node * hp;
+	char Tree[maxn]={0};
+	void work(string ptree,string mtree,int cnt)
+	{
+		char root=ptree[0];
+		Tree[cnt]=root;
+		if (ptree.length()!=1&&mtree.length()!=1)
+		{
+			int pos=mtree.find(root);
+			work(ptree.substr(1,pos),mtree.substr(0,pos),cnt*2);
+			work(ptree.substr(ptree.length()-pos,pos),mtree.substr(mtree.length()-pos,pos),cnt*2+1);
+		}
+		else
+		{
+			Tree[cnt]=root;
+		}
+		
+	}
+	void trans(int x,node * last,int size)
+	{
+		node *p1;
+		if (x==1) 
+		{
+			hp=(node *)malloc(sizeof(node));
+			hp->lson=NULL;
+			hp->rson=NULL;
+			hp->c=Tree[x];
+			if (Tree[x*2]) trans(x*2,hp,1);
+			if (Tree[x*2+1]) trans(x*2+1,hp,2);
+		}
+		else
+		{
+			p1=(node *) malloc(sizeof(node));
+			p1->lson=NULL;
+			p1->rson=NULL;
+			p1->c=Tree[x];
+			if (Tree[x*2]) trans(x*2,p1,1);
+			if (Tree[x*2+1]) trans(x*2+1,p1,2);
+			if (size==1) last->lson=p1;
+			else last->rson=p1;
+		}
+	}      
+	void printlast(node * p)
+	{
+		
+		if (p->lson==NULL && p->rson==NULL) return;
+		if (p->lson!=NULL) printpre(p->lson);
+		if (p->rson!=NULL) printpre(p->rson);
+		cout<<p->c<<" ";
+		return;
+	}     
+	int main()
+	{
+		cin>>n;
+		string pre,mid;
+		cin>>pre;
+		cin>>mid;
+		work(pre,mid,1);
+		trans(1,NULL,0);
+		printlast(hp);
+	return 0;
+	}
+\end{lstlisting}
+\textbf{样例输入1}\\
+ABDECFG\\
+DBEAFCG\\
+\textbf{样例输出1}\\
+DEBFGCA\\
+(标准的三层二叉树)
+\end{document}
