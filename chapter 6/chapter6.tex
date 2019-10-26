@@ -228,17 +228,17 @@ K 7\\
 	#include<bits/stdc++.h>
 	using namespace std;
 	#define maxn 1000
-	#define inf 0x3f3f3f3f\\设置无穷大
+	#define inf 0x3f3f3f3f//设置无穷大
 	struct node
 	{
 		char c;
 		node *lson;
 		node *rson;
-	};\\二叉链表结构体数组
+	};//二叉链表结构体数组
 	int n;
 	node * hp;
 	char Tree[maxn]={0};
-	void work(string ptree,string mtree,int cnt)\\将二叉树两种遍历转变成数组存储
+	void work(string ptree,string mtree,int cnt)//将二叉树两种遍历转变成数组存储
 	{
 		char root=ptree[0];
 		Tree[cnt]=root;
@@ -254,7 +254,7 @@ K 7\\
 		}
 		
 	}
-	void trans(int x,node * last,int size)\\将数组变成二叉链表存储
+	void trans(int x,node * last,int size)//将数组变成二叉链表存储
 	{
 		node *p1;
 		if (x==1) 
@@ -278,7 +278,7 @@ K 7\\
 			else last->rson=p1;
 		}
 	}      
-	void printlast(node * p)\\后序遍历输出
+	void printlast(node * p)//后序遍历输出
 	{
 		
 		if (p->lson==NULL && p->rson==NULL) return;
@@ -293,7 +293,7 @@ K 7\\
 		string pre,mid;
 		cin>>pre;
 		cin>>mid;
-		\\初始化
+		//初始化
 		work(pre,mid,1);
 		trans(1,NULL,0);
 		printlast(hp);
