@@ -184,3 +184,223 @@ int main()
     printlast(hp);
 return 0;
 }
+6-37,38
+#include<bits/stdc++.h>
+#define maxn 1000
+using namespace std;
+int n;
+struct node
+{
+    int num;
+    int lson;
+    int rson;
+    bool vis;
+    bool pri;
+}tree[maxn];
+stack<node> s;
+void pre_order()//先序遍历
+{
+    while(!s.empty())//栈不为空则运行
+    {
+        if (!tree[s.top().num].vis)
+        {
+            cout<<s.top().num;
+            tree[s.top().num].vis=true;
+        }
+        if  (s.top().lson==-1&&s.top().rson==-1)  s.pop();
+        if (s.top().lson!=-1&&!tree[s.top().lson].vis) {//tree[s.top().lson].vis=true;                                                        s.push(tree[s.top().lson]);continue;}
+        if (s.top().rson!=-1&&!tree[s.top().rson].vis) {//tree[s.top().rson].vis=true;
+                                                        s.push(tree[s.top().rson]);continue;}
+        s.pop();
+    }
+}
+void mid_order()//中序遍历
+{
+    
+    while(!s.empty())
+    {
+        if (s.top().lson==-1&&s.top().rson==-1)  {tree[s.top().num].vis=true;cout<<s.top().num;s.pop();}
+        if (s.top().lson!=-1&&!tree[s.top().lson].vis) {s.push(tree[s.top().lson]);continue;}
+        if (!tree[s.top().num].vis)
+            {
+             cout<<s.top().num;
+             tree[s.top().num].vis=true;
+            }
+        if (s.top().rson!=-1&&!tree[s.top().rson].vis) {s.push(tree[s.top().rson]);continue;}
+        s.pop();
+    }
+}
+void last_order()//后序遍历
+{
+    
+    while(!s.empty())
+    {
+        if (s.top().lson==-1&&s.top().rson==-1)  {tree[s.top().num].vis=true;cout<<s.top().num;s.pop();}
+        if (s.top().lson!=-1&&!tree[s.top().lson].vis) {tree[s.top().lson].vis=true;s.push(tree[s.top().lson]);continue;}
+        if (s.top().rson!=-1&&!tree[s.top().rson].vis) {tree[s.top().rson].vis=true;s.push(tree[s.top().rson]);continue;}
+        cout<<s.top().num;
+        s.pop();
+    }
+}
+
+int main()
+{
+    int F,S,root;
+    cin>>n;
+    for (int i=1;i<maxn;i++)
+    {
+        tree[i].lson=-1;
+        tree[i].rson=-1; 
+        tree[i].vis=false;
+    }
+    for (int i=1;i<=n;i++)
+    {
+        int s_size;
+
+        scanf("%d%d%d",&s_size,&F,&S);
+        if (s_size==1) 
+            tree[F].lson=S;
+        else tree[F].rson=S;   
+        tree[F].num=F;
+        tree[S].num=S;
+    }
+    cin>>root;
+    while(!s.empty()) s.pop();
+    s.push(tree[root]);
+    
+    cout<<"pre-order:";
+    pre_order();
+    cout<<endl;
+
+    for (int i=1;i<maxn;i++)
+        tree[i].vis=false;
+    tree[root].vis=true;
+    s.push(tree[root]);
+    
+    cout<<"last-order:";
+    last_order();
+    cout<<endl;
+
+    for (int i=1;i<maxn;i++)
+    tree[i].vis=false;
+    s.push(tree[root]);
+    cout<<"mid-order:";
+    mid_order();
+}
+
+6-43
+#include<bits/stdc++.h>
+using namespace std;
+#define maxn 1000
+#define inf 0x3f3f3f3f
+int n,root,Mnode=-inf;
+struct innode//树结点
+{
+    char name;
+    innode* l;//结点左儿子
+    innode* r;//结点右儿子
+}A[maxn],*p=A;
+
+void rev(innode x)//翻转左右儿子
+{
+    *innode pn;
+    if (x.l!=NULL)  rev(*(x.l));
+    if (x.r!=NULL)  rev(*(x.r));
+    pn=x.l;
+    x.l=x.r;
+    x.r=pn;
+}
+int main()
+{
+    cin>>n;
+    cin>>root;
+    int a,ls,rs;
+    char c;
+    for (int i=0;i<maxn;i++)
+        {
+            A[i].l=NULL;
+            A[i].r=NULL;
+        }
+    for (int i=1;i<=n;i++)
+    { 
+        scanf("%d %d %d %c",&a,&ls,&rs,&c);//输入每个结点的父亲信息和该点的标号
+        A[a].name=c;
+        A[a].l=(p+ls);
+        A[a].r=(p+rs);
+    }
+    rev(root);
+ return 0;
+}
+
+6-56
+#include<bits/stdc++.h>
+using namespace std;
+#define maxn 1000
+#define inf 0x3f3f3f3f
+int n,root;
+struct node//树结点
+{
+    char name;
+    node* ls;
+    node* rs;
+    int llog;
+    int rlog;
+    int num;
+};
+char A[maxn]={0};
+int n;
+node *heap=(node *)malloc(sizeof(node));//根节点
+void build(node * x)//建立一棵树
+{
+    
+    node *p1,*p2;//左右子树指针
+    if (A[2*x->num]) 
+    {
+        x->llog=1;
+        
+        p1=(node*)malloc(sizeof(node));
+        x->ls=p1;
+        p1->ls=p1->rs=NULL;
+        p1->name=A[2*x->num];
+        p1->llog=p1->rlog=0;
+        p1->num=2*x->num;
+        build(p1);//左子树
+    }
+   
+    if (A[(2*x->num)+1]) 
+    {
+        x->rlog=1;
+        p2=(node*)malloc(sizeof(node));
+        x->rs=p2;
+        p2->ls=p2->rs=NULL;
+        p2->name=A[(2*x->num)+1];
+        p2->llog=p2->rlog=0;
+        p2->num=(2*x->num)+1;
+        build(p2);//右子树
+    }
+}
+node *P1,*P2;
+void oline(node * pf)//先序遍历将其线索化
+{
+    P1=P2;
+    P2=pf;
+    if (P1->rs==NULL) P1->rs=pf;
+    if (pf->ls==NULL) pf->ls=P1;
+    if (pf->ls!=NULL) oline(pf->ls);
+    if (pf->rs!=NULL) oline(pf->rs);
+}
+int main()
+{
+    cin>>n;
+    for (int i=0;i<maxn;i++)
+        p[i]=NULL;
+    for (int i=1;i<n;i++)
+        cin>>A[i];//输入树节点信息
+    heap->name=A[1];
+    heap->llog=0;
+    heap->rlog=0;//根初始化条件
+    heap->num=1;
+    build(heap);
+    oline(heap);
+    return 0;
+}

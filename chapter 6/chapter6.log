@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2019.6.10)  26 OCT 2019 13:43
+This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2019.6.10)  30 OCT 2019 23:39
 entering extended mode
 **e:/learning/program/github/data-structure/data-structure-homework/chapter*6/chapter6
 ("e:/learning/program/github/data-structure/data-structure-homework/chapter 6/chapter6.tex"
@@ -850,12 +850,28 @@ Underfull \hbox (badness 10000) in paragraph at lines 203--221
 
  []
 
-[4] [5] [6] ("e:\learning\program\github\data-structure\data-structure-homework\chapter 6\chapter6.aux") ) 
+[4] [5] [6]
+File: 6-37-38.png Graphic file (type QTm)
+ <use  "6-37-38.png" >
+Overfull \hbox (32.84904pt too wide) in paragraph at lines 310--318
+[]
+ []
+
+[7] [8]
+File: 6-43.png Graphic file (type QTm)
+ <use  "6-43.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 422--428
+
+ []
+
+[9] [10]
+File: 6-56.png Graphic file (type QTm)
+ <use  "6-56.png" > [11] [12] ("e:\learning\program\github\data-structure\data-structure-homework\chapter 6\chapter6.aux") ) 
 Here is how much of TeX's memory you used:
- 17664 strings out of 430478
- 349478 string characters out of 3191377
- 481085 words of memory out of 3000000
- 20583 multiletter control sequences out of 15000+200000
+ 17746 strings out of 430478
+ 350321 string characters out of 3191377
+ 526085 words of memory out of 3000000
+ 20662 multiletter control sequences out of 15000+200000
  8606 words of font info for 55 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
  57i,12n,97p,908b,994s stack positions out of 5000i,500n,10000p,200000b,50000s
