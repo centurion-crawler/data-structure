@@ -1,0 +1,189 @@
+\documentclass[UTF8,a4paper]{article}
+\usepackage{fancyhdr}
+\usepackage{ctex}
+\usepackage{CJK}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\geometry{left=1.5cm,right=1.5cm,top=2cm,bottom=1.5cm}
+\lstset{breaklines}%这条命令可以让LaTeX自动将长的代码行换行排版
+\lstset{extendedchars=false}%这一条命令可以解决代码跨页时，章节标题，页眉等汉字不显示的问题
+\lstset{ 
+	language=C++,                % choose the language of the code
+	basicstyle=\small\sf,    % the size of the fonts that are used for the code
+	tabsize=3,                            % sets default tabsize to 3 spaces
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\tiny,              % the size of the fonts that are used for the line-numbers
+	stepnumber=1,                   % the step between two line-numbers. If it's 1 each line
+	% will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code   %
+	keywordstyle=\color[RGB]{33,33,234},               % keywords
+	commentstyle=\color[RGB]{0,0,0},    % comments
+	stringstyle=\color[rgb]{0.170,0.187,0.102},      % strings
+    backgroundcolor=\color{white},
+    rulesepcolor=\color[RGB]{20,20,20},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores                frame = single,         % adds a frame around the code
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	title=\lstname,                 % show the filename of files included with \lstinputlisting;
+	% also try caption instead of title
+	mathescape=true,escapechar=?    % escape to latex with ?..?
+	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	%columns=fixed,                  % nice spacing
+	%morestring=[m]',                % strings
+	%morekeywords={%,...},%          % if you want to add more keywords to the set
+	%    break,case,catch,continue,elseif,else,end,for,function,global,%
+	%    if,otherwise,persistent,return,switch,try,while,...},%
+}
+\pagestyle{fancy}
+\lhead{数据结构作业}
+\chead{}
+\rhead{\bfseries 22920182204393庄震丰}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\begin{document}
+\begin{center}
+    \textbf{\LARGE{数据结构作业 第四章——串}}\\[0.5cm]
+    \normalsize{庄震丰 22920182204393}\\[0.3cm]
+    \large{Nov. $19^{th}$, 2019}
+\end{center}
+\textbf{4-12}\\
+题目要求：编写一个实现串的置换操作Replace(\&S,T,V)的算法。\\
+算法分析：由于与4-17一样，这里采用普通算法求解子串位置，即一个个位置相比。\\
+空间复杂度O(N+M)=O(N)，时间复杂度O(NM)。\\
+\textbf{4-12}\\
+\begin{lstlisting}
+    //常规方法替换子串
+    #include<bits/stdc++.h>
+    using namespace std;
+    #define maxn 1000
+    string S;
+    void Replace(string &S,string T, string V)
+    {
+        int flag[maxn]={0};
+        int p=0,d=V.length()-T.length();
+        for (int i=0;i<S.length();i++)
+        {
+            if (S.substr(i,T.length())==T)
+                flag[++p]=i+1+d*(p-1);
+        }
+        for (int i=1;i<=p;i++)
+            S.replace(flag[i]-1,T.length(),V);
+    }
+    int main()
+    {
+        string t,v;
+        int operatenum;
+        cout<<"Please input the operaternumber:"<<endl;
+        cin>>operatenum;
+        getchar();
+        getline(cin,S);
+        for (int i=1;i<=operatenum;i++)
+        {
+            getline(cin,t);
+            getline(cin,v);
+            Replace(S,t,v);
+        }
+        cout<<S;
+        return 0;
+    }
+\end{lstlisting}
+\textbf{4-17}\\
+题目要求：编写算法，实现串的置换操作Replace(\&S,T,V)。\\
+算法分析：采用多次匹配的KMP算法，求解所有匹配点，当且仅当当前模式串在源串中没有重叠，若有重叠只考虑第一个。\\
+先求nextval数组，求解完后，利用nextval数组进行匹配，匹配失败的时候直接把当前点j跳到模式串中的nextval[j],去匹配，减少无效匹配次数。\\
+空间复杂度O(N),匹配时间复杂度O(N+M)，初始化为O(M)，总体实现是线性时间。\\
+4-17.cpp\\
+\begin{lstlisting}
+    #include<bits/stdc++.h>
+    using namespace std;
+    #define maxn 1000
+    string S;
+    int n;
+    void getnext(string b, int *nextval)//求next数组
+    {
+        int len = b.length();
+        int j = 0 , k = -1 ;
+        nextval[0] = -1 ;
+        while(j < len)//查找多次且可重叠时len不能减一，因为该单词的末尾加一的next也需要被下一次查询用到。
+        {
+            if(k == -1 || b[k] == b[j])
+            {
+                k++;
+                j++;
+                // 下面nest数组的优化
+                if(b[k] != b[j])
+                    nextval[j] = k ;
+                else
+                    nextval[j] = nextval[k];
+            }
+            else
+            {
+                k = nextval[k];
+            }
+        }
+    }
+    void Replace(string &S,string b,string a)
+    {//子串替换
+        int flag[maxn]={0};
+        
+        getline(cin,S);
+            int nextval[10009];
+            getline(cin,b);
+            getline(cin,a);
+            getnext(b, nextval);
+    
+            int lena = a.length() , lenb = b.length();
+            
+            int i = 0 , j = 0;
+            int ans = 0 ,d=lena-lenb;
+            while(i < lena)
+            {
+                if(j == -1 || S[i] == b[j])
+                {
+                    i++ ;
+                    j++ ;
+                }
+                else
+                {
+                    j = nextval[j];
+                }
+                if(j == lenb)
+                {
+                    flag[++ans]=i+1+d*(ans-1);
+                    j = nextval[j] ;
+                }
+            }
+            printf("%d\n" , ans);
+        for (int i=1;i<=ans;i++)
+            S.replace(flag[i]-1,lenb,a);
+    }
+    int main()
+    {
+        string A,B;
+        cout<<"please input the S string:"<<endl;
+        getline(cin,S);//输入源串
+        cout<<"please input the operate number:"<<endl;
+        cin>>n;//输入操作总数
+        getchar();
+        for (int i=1;i<=n;i++)
+        {
+            getline(cin,A);
+            getline(cin,B);
+            Replace(S,A,B);
+        }
+        return 0 ;
+    }
+\end{lstlisting}
+\end{document}

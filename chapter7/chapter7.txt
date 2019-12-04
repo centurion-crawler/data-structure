@@ -1,0 +1,611 @@
+7-15:
+#include<bits/stdc++.h>
+using namespace std;
+#define maxn 1000
+#define inf 0x3f3f3f3f
+struct Graph
+{
+    int MAP[maxn][maxn];
+    int num;
+}G;
+void InsertVex(Graph &G,int v)
+{
+    int n;
+    G.num++;
+    int x,value;
+    cout<<"input the indegree number:"<<endl;
+    cin>>n;
+    cout<<"input the point and value"<<endl;
+    for (int i=1;i<=n;i++)
+        {
+            cin>>x>>value;
+            G.MAP[v][x]=value;
+        }
+    cout<<"output the indegree number:"<<endl;
+    cin>>n;
+    cout<<"input the point and value"<<endl;
+    for (int i=1;i<=n;i++)
+        {
+            cin>>x>>value;
+            G.MAP[x][v]=value;
+        }
+}
+void InsertArc(Graph &G,int v,int w)
+{
+    cout<<"please input the value"<<endl;
+    int value;
+    cin>>value;
+    G.MAP[v][w]=value;
+}
+void DeleteVex(Graph &G,int v)
+{
+    G.num--;
+    for (int i=0;i<maxn;i++)
+    {
+        G.MAP[i][v]=inf;
+        G.MAP[v][i]=inf;
+    }
+}
+void DeleteArc(Graph &G,int v,int w)
+{
+    G.MAP[v][w]=inf;
+}
+void init()
+{
+    for (int i=0;i<maxn;i++)
+        for (int j=0;j<maxn;j++)
+            G.MAP[i][j]=inf;
+}
+void print()
+{
+    for (int i=1;i<=G.num;i++)
+        {
+        for (int j=1;j<=G.num;j++)
+            cout<<G.MAP[i][j]<<" ";
+            cout<<endl;
+        }
+}
+void operat()
+{
+    int type,p,q;
+    cin>>type;
+    while(type!=-1)
+    {
+        if(type==1)
+        {
+            cout<<"Insert point:"<<endl;
+            cin>>p;
+            InsertVex(G,p);
+        }
+        if(type==2)
+        {
+            cout<<"Insert Arc:"<<endl;
+            cin>>p>>q;
+            InsertArc(G,p,q);
+        }
+        if(type==3)
+        {
+            cout<<"Delete point:"<<endl;
+            cin>>p;
+            DeleteVex(G,p);
+        }
+        if(type==4)
+        {
+            cout<<"Delete Arc:"<<endl;
+            cin>>p>>q;
+            DeleteArc(G,p,q);
+        }
+        if (type==5)
+        {
+            cout<<"Matrix is:"<<endl;
+            print();
+        }
+        cin>>type;
+    }
+}
+int main()
+{
+    init();
+    operat();
+    print();
+}
+7-16
+#include<bits/stdc++.h>
+using namespace std;
+#define maxn 1000
+#define inf 0x3f3f3f3f
+struct Graph
+{
+    vector<int> Link[maxn];
+    int num;
+}G;
+void InsertVex(Graph &G,int v)
+{
+    int n;
+    G.num++;
+    int x;
+    cout<<"input the indegree number:"<<endl;
+    cin>>n;
+    for (int i=1;i<=n;i++)
+        {
+            cin>>x;
+            G.Link[x].push_back(v);
+        }
+    cout<<"output the indegree number:"<<endl;
+    cin>>n;
+    for (int i=1;i<=n;i++)
+        {
+            cin>>x;
+            G.Link[v].push_back(x);
+        }
+}
+void InsertArc(Graph &G,int v,int w)
+{
+    G.Link[v].push_back(w);
+}
+void DeleteVex(Graph &G,int v)
+{
+    
+    while(!G.Link[v].empty())
+    {
+        G.Link[v].pop_back();
+    }
+    for (int i=1;i<=G.num;i++)
+    {
+        vector<int>::iterator it;
+        it=find(G.Link[i].begin(),G.Link[i].end(),v);
+        G.Link[i].erase(it);
+    }
+G.num--;
+}
+void DeleteArc(Graph &G,int v,int w)
+{
+    vector<int>::iterator it;
+  v  it=find(G.Link[v].begin(),G.Link[v].end(),w);
+    G.Link[v].erase(it);
+}
+void operat()
+{
+    int type,p,q;
+    cin>>type;
+    while(type!=-1)
+    {
+        if(type==1)
+        {
+            cout<<"Insert point:"<<endl;
+            cin>>p;
+            InsertVex(G,p);
+        }
+        if(type==2)
+        {
+            cout<<"Insert Arc:"<<endl;
+            cin>>p>>q;
+            InsertArc(G,p,q);
+        }
+        if(type==3)
+        {
+            cout<<"Delete point:"<<endl;
+            cin>>p;
+            DeleteVex(G,p);
+        }
+        if(type==4)
+        {
+            cout<<"Delete Arc:"<<endl;
+            cin>>p>>q;
+            DeleteArc(G,p,q);
+        }
+        cin>>type;
+    }
+}
+int main()
+{
+    operat();
+}
+7-25
+#include<bits/stdc++.h>
+using namespace std;
+#define maxn 1000
+#define inf 0x3f3f3f3f
+int s[maxn];
+int pre[maxn]={0};
+int fst[maxn],lst[maxn];
+int n;
+void init()
+{
+    for (int i=0;i<maxn;i++)
+    {
+        fst[i]=-1;lst[i]=-1;
+    }
+}
+bool fin()
+{
+    for (int i=1;i<=n;i++)
+    {
+        if (pre[i]==0) return i;
+    }
+    return -1;
+}
+int main()
+{
+    cin>>n;
+    for (int i=1;i<=n;i++)
+        cin>>s[i];
+    for (int i=1;i<=n;i++)
+        cin>>fst[i];
+    for (int i=1;i<=n;i++)
+        cin>>lst[i];
+    for (int i=1;i<=n;i++)
+        for (int j=fst[i];j<=lst[i];j++)
+            pre[j]++;
+    int N=n;
+    int k=fin();
+    while(k)
+    {
+        N--;
+        for (int j=fst[k];j<=lst[k];j++)
+            pre[j]--;//拓扑删点
+        k=fin();
+    }
+    if (N>0) cout<<"YES"; else cout<<"NO";
+    return 0;
+}
+7-27
+#include<bits/stdc++.h>
+using namespace std;
+#define maxn 1000
+#define inf 0x3f3f3f3f
+int n,k,v,w;
+int flag=false;
+struct Graph
+{
+    vector<int> Link[maxn];
+    int num;
+}G;
+bool vis[maxn];
+void dfs(int x,int deep)
+{
+    if(x==w&&deep==k) 
+     {
+        flag=true;
+        return;
+     }
+     for (vector<int>::iterator it=G.Link[x].begin();it!=G.Link[x].end();it++)
+        {
+            vis[*it]=true;
+            dfs(*it,deep+1);
+            vis[*it]=false;
+        }
+    return;
+}
+void init()
+{
+    int m,p;
+    cin>>n;
+    for (int i=1;i<n;i++)
+    {
+        cin>>m;
+        for (int j=1;j<=m;j++)
+        {
+            cin>>p;
+            G.Link[i].push_back(j);
+        }
+    }
+    memset(vis,sizeof(vis),false);
+}
+int main()
+{
+    cin>>v,w,k;
+    init();
+    dfs(v,1);
+    if (flag) cout<<"Exist";else cout<<"Not Exist";
+}
+7-33
+
+#include <stdio.h>
+
+/* 类型定义 */
+typedef int MFSet; 						//并查集 
+typedef	struct							//边的集合 
+{
+	int u, v;							//端点 
+	int Weight;							//权值 
+}EdgeSetType;
+typedef	struct							//不带权值的边的集合 
+{
+	char u;
+	char v;								//端点 
+}Edge;
+
+/* 函数原型 */
+CSTree MinSpanTree_KRUSKAL_7_33(ALGraph G);
+void InitEdgeSet_7_33(EdgeSetType EdgeSet[], ALGraph G);		//初始化边集 
+Status GetMinEdge_7_33(EdgeSetType EdgeSet[], int *u, int *v);	//获取最小边<u, v>
+void DelMinEdge_7_33(EdgeSetType EdgeSet[], int u, int v);		//删除边<u, v> 
+void InitMFSet_7_33(MFSet S[], ALGraph G);						//初始化并查集 
+int FindSeat_7_33(MFSet S[], int u);							//返回顶点u所在集合 
+void Merge_7_33(MFSet S[], int u, int v);						//将集合u并入集合v 
+CSTree CreateCSTree_7_33(Edge E[]);								//根据边集创建树 
+void AddEdgeToTree_7_33(CSTree *T, char v, char w);				//添加边<v,w>到树中，v为连接点
+
+int main(int argc, char *argv[])
+{
+    ALGraph G;
+    FILE *fp;										//作为输入源
+	CSTree T;
+
+	printf("创建并输出无向图（带权）...\n");	
+	fp = fopen("Data/Algo_7_33.txt", "r");
+	CreateGraph_AL(fp, &G); 
+	fclose(fp);
+	OutputALGraph(G);
+	printf("\n");	
+	
+	T= MinSpanTree_KRUSKAL_7_33(G);
+	printf("此无向连通网的最小生成树为：\n");
+	Print_CS(T);
+	printf("\n");
+}
+
+CSTree MinSpanTree_KRUSKAL_7_33(ALGraph G)			//假设图的权值均大于0 
+{
+	MFSet S[G.vexnum+1];							//并查集 
+	EdgeSetType EdgeSet[G.arcnum+1];				//原始边集 
+	Edge E[G.vexnum];								//筛选后的最小边集								
+	int u, v;
+	int k;
+	
+	InitEdgeSet_7_33(EdgeSet, G);
+	InitMFSet_7_33(S, G);
+	
+	k = 1;
+	E[0].u = E[0].v = G.vexnum-1;
+	
+	while(k<=G.vexnum-1)
+	{
+		if(GetMinEdge_7_33(EdgeSet, &u, &v))				//找到最小边 
+		{
+			if(FindSeat_7_33(S, u)!=FindSeat_7_33(S, v))	//判断是否构成回路 
+			{
+				E[k].u = G.vertices[u].data;
+				E[k].v = G.vertices[v].data;
+				Merge_7_33(S, u, v);						
+				k++;
+			}
+		
+			DelMinEdge_7_33(EdgeSet, u, v); 
+		}
+	}
+	
+	return CreateCSTree_7_33(E);
+}
+
+void InitEdgeSet_7_33(EdgeSetType EdgeSet[], ALGraph G)
+{
+	int k, count;
+	ArcNode *r;
+	
+	EdgeSet[0].Weight = G.arcnum;
+	
+	for(k=1,count=0; k<=G.vexnum; k++)
+	{
+		r = G.vertices[k].firstarc;
+		while(r && r->adjvex<k)
+			r = r->nextarc;
+		while(r)
+		{
+			count++;
+			EdgeSet[count].u = k;
+			EdgeSet[count].v = r->adjvex;
+			EdgeSet[count].Weight = r->info.in;
+			r = r->nextarc;
+		}
+	}
+}
+
+Status GetMinEdge_7_33(EdgeSetType EdgeSet[], int *u, int *v)
+{
+	int k;
+	int min = INT_MAX;
+	
+	for(k=1; k<=EdgeSet[0].Weight; k++)
+	{
+		if(EdgeSet[k].Weight<min)
+		{
+			min = EdgeSet[k].Weight;
+			*u = EdgeSet[k].u;
+			*v = EdgeSet[k].v;
+		}
+	}
+	
+	if(min==INT_MAX)
+		return ERROR;
+	else
+		return OK;
+}
+
+void DelMinEdge_7_33(EdgeSetType EdgeSet[], int u, int v)
+{
+	int k;
+	
+	for(k=1; k<=EdgeSet[0].Weight; k++)
+	{
+		if((EdgeSet[k].u==u&&EdgeSet[k].v==v) || (EdgeSet[k].u==v&&EdgeSet[k].v==u))
+		{
+			while(k+1<=EdgeSet[0].Weight)
+			{
+				EdgeSet[k] = EdgeSet[k+1];
+				k++;
+			}
+			
+			break;
+		}	
+	}
+	
+	EdgeSet[0].Weight--;
+}
+
+void InitMFSet_7_33(MFSet S[], ALGraph G)
+{
+	int k;
+	
+	S[0] = G.vexnum;
+	
+	for(k=1; k<=G.vexnum; k++)
+		S[k] = -1;
+}
+
+int FindSeat_7_33(MFSet S[], int u)
+{
+	int k;
+	
+	for(k=u; S[k]>0; k=S[k])
+		;
+	
+	return k;
+}
+
+void Merge_7_33(MFSet S[], int u, int v) //集合u合并到集合v 
+{
+	int k;
+	
+	S[u] = v;
+	
+	for(k=v; S[k]>0; k=S[k])
+		;
+			
+	S[k]--;
+}
+
+CSTree CreateCSTree_7_33(Edge E[])
+{
+	CSTree T;
+	char Stack[E[0].u+1];					//模拟栈 
+	int i, j, k;
+	char tmp;
+	
+	InitTree_CS(&T);						//初始化孩子-兄弟树 
+	k = -1;
+	
+	if(E[0].u)								//边集不为空
+	{
+		Stack[++k] = E[1].v;
+		Stack[++k] = E[1].u;
+		AddEdgeToTree_7_33(&T, E[1].u, E[1].v);
+		
+		while(k>=0)
+		{
+			tmp = Stack[k--];
+			for(i=2; i<=E[0].u; i++)
+			{
+				if(E[i].u==tmp || E[i].v==tmp)
+				{
+					if(E[i].u==tmp)
+					{
+						AddEdgeToTree_7_33(&T, E[i].u, E[i].v);
+						Stack[++k] = E[i].v;		
+					}
+					else
+					{
+						Stack[++k] = E[i].u;
+						AddEdgeToTree_7_33(&T, E[i].v, E[i].u);				
+					}
+						
+					E[i].u = E[i].v = '\0';		//相当于删掉此条已访问过的边 
+				}
+			}
+		}		
+	} 
+	
+	return T;	
+}
+
+void AddEdgeToTree_7_33(CSTree *T, char v, char w)
+{
+	CSTree p, q, r;
+	
+	r = (CSTree)malloc(sizeof(CSNode));
+	r->data = w;
+	r->firstchild = r->nextsibling = NULL;
+	
+	if(!(*T))
+	{
+		*T = (CSTree)malloc(sizeof(CSNode));
+		(*T)->data = v;
+		(*T)->firstchild = r;
+		(*T)->nextsibling = NULL;		
+	}
+	else
+	{
+		p = Order_CS(*T, v);
+		q = p->firstchild;
+		
+		if(!q)
+			p->firstchild = r;
+		else
+		{
+			while(q && q->nextsibling)
+				q = q->nextsibling;
+			q->nextsibling = r;	
+		}
+	}
+}
+7-36
+#include<bits/stdc++.h>
+#define MAX 1000000000
+using namespace std;
+int d[1000][1000],path[1000][1000];//FLOYD
+vector<int> MPL;
+int main()
+{
+    int i,j,k,m,n;
+    int x,y,z;
+    scanf("%d%d",&n,&m);
+    for(i=1;i<=n;i++)
+        for(j=1;j<=n;j++)
+        {
+            d[i][j]=MAX;
+            path[i][j]=j;
+        }
+    for(i=1;i<=m;i++)
+    {
+            scanf("%d%d%d",&x,&y,&z);
+            d[x][y]=z;
+            d[y][x]=z;
+    }
+    for(k=1;k<=n;k++)
+        for(i=1;i<=n;i++)
+            for(j=1;j<=n;j++) {
+                if(d[i][k]+d[k][j]<d[i][j]) {
+                    d[i][j]=d[i][k]+d[k][j];
+                    path[i][j]=path[i][k];
+                }
+            }
+    for(i=1;i<=n;i++)
+        for(j=i+1;j<=n;j++)
+          if (i!=j) printf("%d->%d:%d\n",i,j,d[i][j]);
+    int f, en;
+    scanf("%d%d",&f,&en);
+    while (f!=en)
+    {
+        printf("%d->",f);
+        f=path[f][en];
+    }
+    printf("%d\n",en);
+    for (int i=1;i<=n;i++)
+    {
+        int t=-MAX,fl=1;
+        for (int j=1;j<=n;j++)
+        {
+            if (d[i][j]!=MAX)
+            {
+                if (d[i][j]>t) 
+                {
+                    t=d[i][j];
+                    fl=j;
+                }
+            }
+        }
+        MPL.push_back(fl);
+    }
+    return 0;
+}
