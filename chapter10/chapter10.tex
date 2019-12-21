@@ -1,0 +1,339 @@
+\documentclass[UTF8,a4paper]{article}
+\usepackage{fancyhdr}
+\usepackage{ctex}
+\usepackage{CJK}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\geometry{left=1.5cm,right=1.5cm,top=2cm,bottom=1.5cm}
+\lstset{breaklines}%这条命令可以让LaTeX自动将长的代码行换行排版
+\lstset{extendedchars=false}%这一条命令可以解决代码跨页时，章节标题，页眉等汉字不显示的问题
+\lstset{ 
+	language=C++,                % choose the language of the code
+	basicstyle=\small\sf,    % the size of the fonts that are used for the code
+	tabsize=3,                            % sets default tabsize to 3 spaces
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\tiny,              % the size of the fonts that are used for the line-numbers
+	stepnumber=1,                   % the step between two line-numbers. If it's 1 each line
+	% will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code   %
+	keywordstyle=\color[RGB]{33,33,234},               % keywords
+	commentstyle=\color[RGB]{0,0,0},    % comments
+	stringstyle=\color[rgb]{0.170,0.187,0.102},      % strings
+    backgroundcolor=\color{white},
+    rulesepcolor=\color[RGB]{20,20,20},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores                frame = single,         % adds a frame around the code
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	title=\lstname,                 % show the filename of files included with \lstinputlisting;
+	% also try caption instead of title
+	mathescape=true,escapechar=?    % escape to latex with ?..?
+	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	%columns=fixed,                  % nice spacing
+	%morestring=[m]',                % strings
+	%morekeywords={%,...},%          % if you want to add more keywords to the set
+	%    break,case,catch,continue,elseif,else,end,for,function,global,%
+	%    if,otherwise,persistent,return,switch,try,while,...},%
+}
+\pagestyle{fancy}
+\lhead{数据结构作业}
+\chead{}
+\rhead{\bfseries 22920182204393庄震丰}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\begin{document}
+\begin{center}
+    \textbf{\LARGE{数据结构作业 第十章——排序}}\\[0.5cm]
+    \normalsize{庄震丰 22920182204393}\\[0.3cm]
+    \large{Dec. $12^{nd}$, 2019}
+\end{center}
+\textbf{10-32}\\
+荷兰国旗问题：\\
+设有一个仅由红、白、蓝三种颜色的条块组成的序列，请编写一个时间复杂度为$O(n)$d的算法，使得这些条块按红、白、蓝的顺序排列，即排成荷兰国旗的图案。\\
+\textbf{算法分析}\\
+先统计不同颜色的条纹数目，按照数目进行分块排序，先整体排序，把第k2个位置作为轴，将小于蓝色的放到左边，再以k1作为轴，把小于白色的放到左边，则满足红、白、蓝顺序。一共只进行了两趟排序。\\
+时间复杂度O(n),空间复杂度O(n).\\
+\textbf{code}\\
+\begin{lstlisting}
+    include<bits/stdc++.h>
+    #define maxn 1000
+    using namespace std;
+    int n;
+    int a[maxn];
+    void flagsort(int l,int r,int index)
+    {
+        int i=l,j=r;
+        do
+        {
+            while(a[i]<index) i++;
+            while(a[j]>=index) j--;
+            if (i<=j)
+                {
+                    swap(a[i],a[j]);
+                    i++;
+                    j--;
+                }
+        }while(i<j);
+    }
+    void init()
+    {
+        cin>>n;
+        int k1=0,k2=0;
+        for (int i=1;i<=n;i++)
+        {
+            cin>>a[i];
+            k1+=(a[i]==0);
+            k2+=(a[i]<=1);
+        }
+        flagsort(1,n,2);
+        flagsort(1,k2,1);
+    }
+    int main()
+    {
+        init();    
+        for (int i=1;i<=n;i++)
+            cout<<a[i]<<" ";
+    }
+\end{lstlisting}
+\textbf{10-34}\\
+已知$(k_1,k_2,...,k_p)$,是堆，则可以写出一个时间复杂度为$O(logn)$的算法，将$(k_1,k_2,k_3,...,k_{p+1})$调整为堆，试编写一个从p=1起，逐个插入建堆的算法，讨论建堆的复杂度。\\
+\textbf{算法分析}\\
+每当一个节点进入时，执行insert操作，加到叶子节点，再和其父亲比较，若为大根堆，且当前叶子节点大于其父亲节点，则交换，否则就保持。若为小根堆，当前叶子节点小于其父亲节点，则交换，否则保持。直到插入完所有节点。\\
+单个插入时间复杂度O(logn),总时间复杂度O(nlogn),空间复杂度O(n).\\
+\text{code}
+\begin{lstlisting}
+    #include<bits/stdc++.h>
+    #define maxn 1000
+    using namespace std;
+    int n;
+    int a[maxn];
+    void Insert(int num,int pos)
+    {
+        a[pos]=num;
+        while(a[pos]<a[pos/2]&&pos>=1) 
+        {
+            swap(a[pos],a[pos/2]);
+            pos=pos/2;
+        }
+    }
+    void init()
+    {
+        cin>>n;
+        int k;
+        for (int i=1;i<=n;i++)
+        {
+            cin>>k;
+            Insert(k,i);
+        }
+    }
+    int main()
+    {
+        init();    
+        for (int i=1;i<=n;i++)
+            cout<<a[i]<<" ";
+        return 0;
+    }    
+\end{lstlisting}
+\textbf{10-38}\\
+2-路归并排序的另一种策略，先对排序序列扫描一遍，找出划分为若干个最大有序序列，将这些序列作为初始归并段，写出一个算法在链表结构上实现这个策略。\\
+\textbf{算法分析}\\
+对于给定的列表序列，建立一个循环队列，所有的有序子序列的头节点先进队，之后每次取出两个队尾的头结点指针，将两个子序列分别进行重构，再将其中一个较小的子序列头指针push进队，直到最后只有一个头节点指针。\\
+时间复杂度O(logn),空间复杂度O(n).\\
+\textbf{Code}
+\begin{lstlisting}
+    #include <stdio.h>
+    void Algo_10_38(LinkList L)
+    {
+        int k, len;
+        int i, m, n;
+        int seg[101];							//0号单元计数 
+        LinkList SR[101], TR[101];
+        LinkList p, r;
+        
+        for(len=0,p=L->next; p; p=p->next)		//初始化链表指针数组 
+            SR[++len] = p;
+        
+        seg[0] = seg[1] = 1;
+        
+        for(k=2; k<=len; k++)						//用最大有序子列生成初始归并段 
+        {
+            if(SR[k]->data<SR[k-1]->data)
+            {
+                seg[0]++;
+                seg[seg[0]] = k;
+            }
+        }
+            
+        MSort_10_38(SR, TR, seg, len, 1, seg[0]);	//对各初始归并段的指针排序 
+            
+        for(k=1,r=L; k<=len; k++)					//根据排好的指针顺序重排记录
+        {
+            r->next = TR[k];
+            r = r->next;
+        }
+        
+        r->next = NULL;
+    }
+    
+    void MSort_10_38(LinkList SR[], LinkList TR[], int seg[], int len, int s, int t)
+    {
+        int m, ks, ke;
+        LinkList R[len+1];
+        
+        if(s==t)
+        {
+            ks = seg[s];
+            ke = ++s<=seg[0] ? (seg[s]-1) : len;
+            for( ; ks<=ke; ks++)
+                TR[ks] = SR[ks];
+        }
+        else
+        {
+            m = (s+t)/2;
+            MSort_10_38(SR, R, seg, len, s, m);
+            MSort_10_38(SR, R, seg, len, m+1, t);
+            Merge_10_38(R, TR, seg, len, s, m, t);
+        }	
+    }
+    
+    void Merge_10_38(LinkList SR[], LinkList TR[], int seg[], int len, int s, int m, int t)
+    {
+        int k;
+        int is, ie, js, je;
+        
+        is = seg[s];
+        ie = seg[m+1]-1;
+        js = seg[m+1];
+        je = ++t<=seg[0] ? (seg[t]-1) : len;
+        
+        k = is;
+        
+        while(is<=ie&&js<=je)
+        {
+            if(SR[is]->data<=SR[js]->data)
+                TR[k++] = SR[is++];
+            else
+                TR[k++] = SR[js++];
+        }
+        
+        while(is<=ie)
+            TR[k++] = SR[is++];
+    
+        while(js<=je)
+            TR[k++] = SR[js++];
+    }
+    
+    void PrintKey(LElemType_L e)
+    {
+        printf("%d ", e);
+    }
+    
+    int main()
+    {	
+        FILE *fp;
+        LinkList L;
+        int num;
+            
+        printf("创建并输出一个任意序列...\n");
+        fp = fopen("Data/Algo_10_37.txt", "r");
+        Scanf(fp, "%d", &num);
+        CreateList_TL(fp, &L, num);
+        ListTraverse_L(L, PrintKey);
+        printf("\n\n");	
+    
+        printf("将关键字按递增顺序排列...\n");
+        Algo_10_38(L); 
+        ListTraverse_L(L, PrintKey);
+        printf("\n\n");	
+    
+        return 0;
+    }
+\end{lstlisting}
+\textbf{10-42}\\
+序列中值序列值的是，如果将此序列排序后，它的第$\frac{n}{2}$个记录，试写出一个中值记录的算法。\\
+\textbf{算法分析}\\
+利用快速排序的思想，从序列中取一个数mid,然后把序列分成小于等于mid和大于等于mid的两部分，由两个部分的元素个数和k的大小关系可以确定这个数是在哪个部分。对部分序列的探查可以递归处理。
+采用分治的思想。时间复杂度$O(n)$,空间复杂度$O(n)$\\
+\textbf{code}
+\begin{lstlisting}
+    #include<bits/stdc++.h>
+    #define maxn 1000
+    using namespace std;
+    int n;
+    int a[maxn];
+    void flagsort(int l,int r,int rank)
+    {
+        int i=l,j=r;
+        int index=a[(l+r)/2];
+        do
+        {
+            while(a[i]<index) i++;
+            while(a[j]>index) j--;
+            if (i<=j)
+                {
+                    swap(a[i],a[j]);
+                    i++;
+                    j--;
+                }
+        }while(i<j);
+        if(l<=j && rank<=j-l+1) flagsort(l,j,rank);
+        if(i<=r && rank>=i-l+1) flagsort(i,r,rank-(i-l));
+    }
+    void init()
+    {
+        cin>>n;
+        for (int i=1;i<=n;i++)
+            cin>>a[i];
+        int k=(n+1)/2;
+        flagsort(1,n,k);
+        cout<<a[k];
+    }
+    int main()
+    {
+        init();   
+        return 0;
+    }
+\end{lstlisting}    
+\textbf{10-43}\\
+已知序列a[1..n]中的关键字各不相同，可按照如下所述实现计数排序，另设一个数组c[1...n]，对每一个记录a[i],统计序列中关键字比它小的记录个数存于c[i],则c[i]=0的记录为关键字最小的记录，然后依c[i]值的大小对a中记录进行重新排序，试编写上述算法。\\
+\textbf{算法分析}\\
+假设输入线性表L的长度为n,$L=L_1,L_2,...,L_n$：线性表的元素属于有限偏序集S，|S|=k且k=O(n)，S={S1,S2,..Sk}；则计数排序可以描述如下：
+1、扫描整个集合S，对每一个Si∈S，找到在线性表L中小于等于Si的元素的个数T(Si)；
+2、扫描整个线性表L，对L中的每一个元素Li，将Li放在输出线性表的第T(Li)个位置上，并将T(Li)减1。
+时间复杂度$O(n)$,空间复杂度$O(n)$。\\
+\textbf{code}\\
+\begin{lstlisting}
+#include <bits/stdc++.h>
+using namespace std;
+const int MAXN = 100000;
+const int k = 1000; 
+int a[MAXN], c[MAXN], ranked[MAXN];
+ 
+int main() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i]; 
+        ++c[a[i]];
+    }
+    for (int i = 1; i < k; ++i)
+        c[i] += c[i-1];
+    for (int i = n-1; i >= 0; --i)
+        ranked[--c[a[i]]] = a[i];
+    for (int i = 0; i < n; ++i)
+        cout << ranked[i] << endl;
+    return 0;
+}
+\end{lstlisting}
+\end{document}
